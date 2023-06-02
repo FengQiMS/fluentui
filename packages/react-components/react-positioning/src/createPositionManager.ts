@@ -55,9 +55,13 @@ export function createPositionManager(options: PositionManagerOptions): Position
   const scrollParents: Set<HTMLElement> = new Set<HTMLElement>();
   const targetWindow = container.ownerDocument.defaultView;
 
-  // When the container is first resolved, set position `fixed` to avoid scroll jumps.
-  // Without this scroll jumps can occur when the element is rendered initially and receives focus
-  Object.assign(container.style, { position: 'fixed', left: 0, top: 0, margin: 0 });
+  // Assigns initial styles to the container
+  Object.assign(container.style, {
+    position: strategy,
+    left: 0,
+    top: 0,
+    margin: 0,
+  });
 
   const forceUpdate = () => {
     // debounced update can still occur afterwards
@@ -79,7 +83,6 @@ export function createPositionManager(options: PositionManagerOptions): Position
       isFirstUpdate = false;
     }
 
-    Object.assign(container.style, { position: strategy });
     computePosition(target, container, { placement, middleware, strategy })
       .then(({ x, y, middlewareData, placement: computedPlacement }) => {
         // Promise can still resolve after destruction
